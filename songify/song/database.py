@@ -12,14 +12,21 @@ class DatabaseFunctions:
     list of artists of the song, songs count and songs length
     """
     @staticmethod
-    def get_by_id(id:int)->str:
+    def get_by_id(id:int)->dict:
         
         try:
             data = Song.objects.get(id=id)
         except:
             raise ObjectDoesNotExist(f"No songs with id {id}")
-
-        return data
+        
+        result = {
+            'id': data.id,
+            'song': data.name,
+            'artists': data.artist,
+            'album': data.album,
+            'song_length': data.length/60.0
+        }
+        return result
     
     @staticmethod
     def get_by_name(name:str)->str:
@@ -45,12 +52,25 @@ class DatabaseFunctions:
     @staticmethod
     def get_all()->list:
 
-        data = Song.objects.all().values_list('name', flat=True)
+        # data = Song.objects.all().values_list('name', flat=True)
+        all_songs = Song.objects.all()
+        result_list = []
+
+        for song in all_songs:
+            result_list.append(
+                {
+                    'id': song.id,
+                    'song': song.name,
+                    'artist': song.artist,
+                    'album': song.album,
+                    'length': song.length/60.0
+                }
+            )
         
-        if not data:
+        if not all_songs:
             raise ObjectDoesNotExist("No songs found")
 
-        return list(data)
+        return result_list
     
     @staticmethod
     def get_songs_count()->int:

@@ -33,6 +33,7 @@ class SongView(APIView):
             data = json.dumps(data)
         elif id:
             data = DatabaseFunctions.get_by_id(id)
+            data = json.dumps(data)
         elif name:
             data = DatabaseFunctions.get_by_name(name)
         else:
